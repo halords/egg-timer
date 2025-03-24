@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Egg Timer Web App</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&family=DynaPuff:wght@400;700&display=swap');
+
+    body {
+      margin: 0;
+      font-family: 'Comic Neue', cursive;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: linear-gradient(135deg, #FFECB3, #FFE0B2);
+    }
+    .container {
+      text-align: center;
+      width: 90%;
+      max-width: 400px;
+    }
+    h1 {
+      margin-bottom: 30px;
+      color: #4E342E;
+    }
+    .eggs {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+    .egg-button {
+      background: #fce4b2;
+      border-radius: 20px;
+      padding: 10px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+      cursor: pointer;
+      border: none;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .egg-button:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 24px rgba(0,0,0,0.3);
+    }
+    .egg-image {
+      width: 100%;
+      height: auto;
+      border-radius: 15px;
+    }
+    .timer-screen {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+    }
+    .timer-image {
+      width: 150px;
+      height: auto;
+      border-radius: 15px;
+      margin-bottom: 20px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    }
+    .timer-display {
+      font-size: 48px;
+      margin: 20px 0;
+      color: #4E342E;
+      font-family: 'DynaPuff', cursive;
+    }
+    .message {
+      font-size: 24px;
+      margin-bottom: 30px;
+      color: #4E342E;
+    }
+    .back-button {
+      background: #FF7043;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="start-screen">
+      <h1>Choose Your Egg</h1>
+      <div class="eggs">
+        <button class="egg-button" onclick="startTimer(240, 'soft.jpg')">
+          <img src="soft.jpg" alt="Soft Egg" class="egg-image">
+        </button>
+        <button class="egg-button" onclick="startTimer(360, 'medium.jpg')">
+          <img src="medium.jpg" alt="Medium Egg" class="egg-image">
+        </button>
+        <button class="egg-button" onclick="startTimer(540, 'hard.jpg')">
+          <img src="hard.jpg" alt="Hard Egg" class="egg-image">
+        </button>
+        <button class="egg-button" onclick="startTimer(720, 'extra-hard.jpg')">
+          <img src="extra-hard.jpg" alt="Extra Hard Egg" class="egg-image">
+        </button>
+      </div>
+    </div>
+
+    <div class="timer-screen">
+      <img id="timer-image" src="" alt="Egg Image" class="timer-image">
+      <div class="timer-display" id="timer">00:00</div>
+      <div class="message" id="message"></div>
+      <button class="back-button" onclick="goBack()">Back</button>
+    </div>
+  </div>
+
+  <script>
+    let countdown;
+
+    function startTimer(seconds, imageSrc) {
+      document.querySelector('.start-screen').style.display = 'none';
+      const timerScreen = document.querySelector('.timer-screen');
+      timerScreen.style.display = 'flex';
+
+      document.getElementById('timer-image').src = imageSrc;
+
+      const timerDisplay = document.getElementById('timer');
+      const message = document.getElementById('message');
+      message.textContent = '';
+
+      clearInterval(countdown);
+
+      const now = Date.now();
+      const then = now + seconds * 1000;
+
+      countdown = setInterval(() => {
+        const secondsLeft = Math.round((then - Date.now()) / 1000);
+
+        if (secondsLeft < 0) {
+          clearInterval(countdown);
+          timerDisplay.textContent = '00:00';
+          message.textContent = 'Your egg is cooked!';
+          return;
+        }
+
+        const minutes = Math.floor(secondsLeft / 60);
+        const remainderSeconds = secondsLeft % 60;
+        timerDisplay.textContent = `${String(minutes).padStart(2, '0')}:${String(remainderSeconds).padStart(2, '0')}`;
+      }, 1000);
+    }
+
+    function goBack() {
+      clearInterval(countdown);
+      document.querySelector('.timer-screen').style.display = 'none';
+      document.querySelector('.start-screen').style.display = 'block';
+    }
+  </script>
+</body>
+</html>
